@@ -1,0 +1,21 @@
+---
+layout: default
+---
+
+<article class="blog-post">
+  <nav><a href="{{ '/' | relative_url }}">← 返回首页</a></nav>
+  <h1>{{ page.title | escape }}</h1>
+  <p class="post-date"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: site.date_format }}</time> · {{ page.author | escape }}</p>
+  {% unless page.toc == false %}
+  <nav class="post-toc" aria-label="文章目录" hidden>
+    <details open>
+      <summary>目录</summary>
+      <ul class="toc-list"></ul>
+    </details>
+  </nav>
+  <script src="{{ '/assets/js/toc.js' | relative_url }}" defer></script>
+  {% endunless %}
+  <div class="post-content">
+    {{ content }}
+  </div>
+</article>

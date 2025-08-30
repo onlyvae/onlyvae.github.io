@@ -1,0 +1,35 @@
+title: "onlyvae's blog"
+description: "记录日常学习。"
+url: "https://onlyvae.github.io"
+baseurl: ""
+repository: onlyvae/onlyvae.github.io
+# 明确主题的回退值，避免本地渲染时请求 GitHub API。
+github:
+  repository_url: "https://github.com/onlyvae/onlyvae.github.io"
+  repository_name: "onlyvae.github.io"
+  project_tagline: "记录日常学习。"
+lang: zh-CN
+timezone: Asia/Singapore
+
+theme: jekyll-theme-hacker
+show_downloads: false
+plugins:
+  - jekyll-feed
+
+permalink: /:year/:month/:day/:title/
+date_format: "%Y-%m-%d"
+excerpt_separator: "<!--more-->"
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+      author: onlyvae
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - bin
+  - vendor

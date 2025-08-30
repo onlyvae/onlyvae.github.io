@@ -1,0 +1,19 @@
+#!/bin/sh
+set -eu
+
+cd "$(dirname "$0")/.."
+
+for ruby_bin in /opt/homebrew/opt/ruby@3.3/bin /usr/local/opt/ruby@3.3/bin; do
+  if [ -x "$ruby_bin/ruby" ]; then
+    PATH="$ruby_bin:$PATH"
+    export PATH
+    break
+  fi
+done
+
+# 空仓库还没有 HEAD，本地预览使用固定的样式缓存标识。
+if ! git rev-parse --verify HEAD >/dev/null 2>&1; then
+  export JEKYLL_BUILD_REVISION=local
+fi
+
+exec bundle exec jekyll serve --livereload --host 127.0.0.1 "$@"

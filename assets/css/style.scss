@@ -1,0 +1,56 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+body {
+  overflow-wrap: break-word;
+}
+
+.post-summary {
+  padding: 24px 0;
+  border-bottom: 1px dashed #444;
+}
+
+.post-summary h2 {
+  margin: 8px 0 16px;
+}
+
+.post-date {
+  color: #aaa;
+  font-size: 14px;
+}
+
+.blog-post nav {
+  margin-bottom: 24px;
+}
+
+.post-toc {
+  padding: 16px 20px;
+  border: 1px dashed #465333;
+  border-radius: 4px;
+  background: rgba(181, 232, 83, 0.04);
+}
+
+.post-toc summary {
+  cursor: pointer;
+  color: #b5e853;
+}
+
+.post-toc ul {
+  padding-left: 24px;
+  margin: 12px 0 0;
+}
+
+.post-toc li {
+  margin: 6px 0;
+}
+
+.post-content h2,
+.post-content h3 {
+  scroll-margin-top: 24px;
+}
+
+.feed-link {
+  margin-top: 32px;
+}
