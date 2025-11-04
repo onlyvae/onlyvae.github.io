@@ -38,7 +38,7 @@ iOS越狱（Jailbreak）是利用系统漏洞或其他特权能力，突破Apple
 
 - [palera1n](https://palera.in/)
   
-  只针对A8–A11老设备，利用不可通过软件更新修复的 `checkm8` BootROM 漏洞，需要设备连接电脑引导越狱。
+  只针对A8–A11老设备，利用不可通过软件更新修复的 `checkm8` BootROM 漏洞，每次越狱需要设备连接电脑引导，设备重启也需要连接电脑重新引导。
 
 | 设备芯片 | 代表机型 | 最高可越狱版本 | 工具 |
 | --- | --- | --- | --- |
@@ -51,8 +51,8 @@ iOS越狱（Jailbreak）是利用系统漏洞或其他特权能力，突破Apple
 | A16 | iPhone 14 Pro、15 基础款 | iOS 17.3.1 | Dopamine |
 | A17 | iPhone 15 Pro 系列 | iOS 17.3.1 | Dopamine |
 
-当前iPhone X以下的设备均可越狱，系统已经不在继续更新了，iPhone X最后一个系统版本是16.7.16。
+当前iPhone X以下的设备均可越狱，系统已经不再继续更新了，iPhone X最后一个系统版本是16.7.16。
 
 [Dopamine-roothide](https://github.com/roothide/Dopamine-roothide)在Dopamine的基础上，添加越狱环境隐藏功能，可选择应用单独隐藏越狱。
 
-不论哪种越狱方式，都会安装越狱环境[Procursus](https://github.com/ProcursusTeam/Procursus)，Procursus负责提供基础的类Unix工具、包管理器的底层(dpkg和apt)以及基础库和依赖。最后才可以通过Sileo或Zebra来安装各种插件。
+不论哪种越狱方式，都会安装越狱环境[Procursus](https://github.com/ProcursusTeam/Procursus)，Procursus负责提供基础的命令行工具、包管理器的底层(dpkg和apt)以及一些依赖库。最后通过包管理器Sileo或Zebra来安装各种插件。
