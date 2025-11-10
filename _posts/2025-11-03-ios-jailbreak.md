@@ -30,7 +30,7 @@ iOS越狱（Jailbreak）是利用系统漏洞或其他特权能力，突破Apple
 
 ## iOS越狱工具
 
-目前针对iOS 15及以上的系统版本，主流的越狱工具有以下几种：
+iPhone能否越狱与CPU型号和系统版本有关，目前针对iOS 15及以上的系统版本，主流的越狱工具有以下几种：
 
 - [Dopamine](https://ellekit.space/dopamine/)
 
@@ -40,7 +40,7 @@ iOS越狱（Jailbreak）是利用系统漏洞或其他特权能力，突破Apple
   
   只针对A8–A11老设备，利用不可通过软件更新修复的 `checkm8` BootROM 漏洞，每次越狱需要设备连接电脑引导，设备重启也需要连接电脑重新引导。
 
-| 设备芯片 | 代表机型 | 最高可越狱版本 | 工具 |
+| CPU | 机型 | 最高可越狱版本 | 工具 |
 | --- | --- | --- | --- |
 | A9–A10 | iPhone 6s、7、SE 一代 | iOS 15.8.8 | Dopamine / palera1n |
 | A11 | iPhone 8、8 Plus、X | iOS 16.7.16 | Dopamine / palera1n |
@@ -51,8 +51,13 @@ iOS越狱（Jailbreak）是利用系统漏洞或其他特权能力，突破Apple
 | A16 | iPhone 14 Pro、15 基础款 | iOS 17.3.1 | Dopamine |
 | A17 | iPhone 15 Pro 系列 | iOS 17.3.1 | Dopamine |
 
-当前iPhone X以下的设备均可越狱，系统已经不再继续更新了，iPhone X最后一个系统版本是16.7.16。
+几点补充：
+1. A11及之前的CPU架构为arm64，A11之后的CPU架构为arm64e，在arm64的基础上添加了指针签名保护(PAC)。目前arm64的设备均可越狱(包括iPad)，并且系统已经不再继续更新了，iPhone 8/X最后一个系统版本是16.7.16。
 
-[Dopamine-roothide](https://github.com/roothide/Dopamine-roothide)在Dopamine的基础上，添加越狱环境隐藏功能，可选择应用单独隐藏越狱。
+2. iOS系统系统降级受苹果签名严格限制，在新版本发布之后，旧版本的签名通道通常只保留几天到几周，关闭后就无法通过官方方式降级，所以不能将系统降级到可越狱的版本。
 
-不论哪种越狱方式，都会安装越狱环境[Procursus](https://github.com/ProcursusTeam/Procursus)，Procursus负责提供基础的命令行工具、包管理器的底层(dpkg和apt)以及一些依赖库。最后通过包管理器Sileo或Zebra来安装各种插件。
+3. Dopamine需要通过应用侧载的方式安装，iOS版本在14.0 beta 2 - 16.6.1、16.7 RC (20H18)、17.0的，可以先安装巨魔(TrollStore)，再使用巨魔安装Dopamine，其他版本需要通过其他方式，例如使用免费Apple ID自签(7天到期)，或者使用付费的Apple开发者账号。
+
+4. [Dopamine-roothide](https://github.com/roothide/Dopamine-roothide)在Dopamine的基础上，添加越狱环境隐藏功能，可选择应用单独隐藏越狱，但是开启隐藏越狱后无法注入插件。
+
+5. 不论哪种越狱方式，都会安装越狱环境[Procursus](https://github.com/ProcursusTeam/Procursus)和包管理器(Sileo或Zebra)，Procursus负责提供基础的命令行工具、包管理器的底层(dpkg和apt)以及一些依赖库。包管理器可以添加软件仓库，安装别人开发好的软件。
