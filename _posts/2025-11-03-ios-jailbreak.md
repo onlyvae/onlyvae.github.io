@@ -1,11 +1,11 @@
 ---
-title: "iOS越狱"
+title: "iOS Jailbreak"
 ---
 iOS Jailbreak、Dopamine、palera1n
 
 <!--more-->
 
-## iOS越狱是什么
+## 0x1 iOS越狱是什么
 
 iOS越狱（Jailbreak）是利用系统漏洞或其他特权能力，突破Apple对代码执行、文件系统、进程权限和软件安装等方面的限制，从而获得普通 iOS 应用无法使用的系统能力。
 
@@ -28,7 +28,7 @@ iOS越狱（Jailbreak）是利用系统漏洞或其他特权能力，突破Apple
     ![修改设备机型]({{ '/assets/images/spoof_hw_machine.jpg' | relative_url }})
     
 
-## iOS越狱工具
+## 0x2 iOS越狱工具
 
 iPhone能否越狱与CPU型号和系统版本有关，目前针对iOS 15及以上的系统版本，主流的越狱工具有以下几种：
 
