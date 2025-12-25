@@ -59,31 +59,22 @@ Certificate:
 
 ## 0x2 Code Signature
 
-代码签名存放在Mach-O文件中，使用 `LC_CODE_SIGNATURE` 命令加载，其数据结构如下：
+代码签名存放在Mach-O文件中，使用 `LC_CODE_SIGNATURE` load command命令加载。
 
 ![代码签名]({{ '/assets/images/code_signature.jpg' | relative_url }})
 
-1. CODE_DIRECTORY
-  
-    代码目录，是代码签名中最关键的数据，其数据结构是一个数组，保存多个哈希值。
-    ```shell
-    > codesign --display -vvvvvv iosapp_sec_study.app
-Executable=/Users/xxxx/Library/Developer/Xcode/DerivedData/iosapp_sec_study-bvvkkeenbbwybggulfhmwwbchbrc/Build/Products/Debug-iphoneos/iosapp_sec_study.app/iosapp_sec_study
-Identifier=ios.iosapp-sec-study
-Format=app bundle with Mach-O thin (arm64)
+### 0x2_1 CODE_DIRECTORY
+CodeDirectory记录了被签名程序的所有关键哈希信息。系统通过验证CodeDirectory的完整性，来确认整个可执行文件、资源、Info.plist、entitlements等是否被篡改。
+
+```shell
+> codesign --display -vvvvvv iosapp_sec_study.app
+...
 CodeDirectory v=20400 size=696 flags=0x0(none) hashes=11+7 location=embedded
-VersionPlatform=2
-VersionMin=1048576
-VersionSDK=1705216
 Hash type=sha256 size=32
 CandidateCDHash sha256=d2fd77ff616f665f84c5764057efa51508ec2f31
 CandidateCDHashFull sha256=d2fd77ff616f665f84c5764057efa51508ec2f31ac5879a661d20640fd48b610
 Hash choices=sha256
-CMSDigest=d2fd77ff616f665f84c5764057efa51508ec2f31ac5879a661d20640fd48b610
-CMSDigestType=2
-Executable Segment base=0
-Executable Segment limit=98304
-Executable Segment flags=0x11
+...
 Page size=16384
     -7=87f76d413101bd671d4b2f3cab761ab8ad771742fd6968221f0f0e2d9b206c9e
     -6=0000000000000000000000000000000000000000000000000000000000000000
@@ -108,85 +99,113 @@ Signature size=4783
 Authority=Apple Development: XXXXX@XXXX.com (XXXXX)
 Authority=Apple Worldwide Developer Relations Certification Authority
 Authority=Apple Root CA
-Signed Time=Oct 23, 2026 at 22:25:02
-Info.plist entries=29
-TeamIdentifier=P54HCX53YR
-Sealed Resources version=2 rules=10 files=7
-Internal requirements count=1 size=188
-Total signatures=1
-Chosen signature=1
+...
+
 ```
     
-    使用codesign命令查看App的代码签名，代码目录就是上面的-7到10这17个哈希值：
-    * 其中11个非负下标的哈希值是将Mach-O中的代码段根据Page size(16KB)分成11个Page，对每个Page进行计算得到的SHA-256哈希值，系统在加载某一Page的代码时，会对这一页的代码进行哈希验证。
+示例中的CodeDirectory有11个代码哈希和特殊哈希，哈希算法为SHA-256：
+* 代码哈希(非负下标)：将Mach-O中的代码段根据Page size(16384)分成11个Page，对每个Page进行计算哈希运算。系统在加载当前应用的某一Page代码时，会对这一页的代码进行哈希验证。
   
-    * 其中负下标的哈希值对应的是不同的文件，比如-1是Info.plist文件的SHA-256哈希值，-3是资源文件的哈希值，-5是Entitlements的哈希值。
+* 特殊哈希(负下标)：-1是Info.plist文件的哈希值，-3是资源文件的哈希值，-5是Entitlements的哈希值。
+
     ```shell
-    > shasum -a 256 iosapp_sec_study.app/Info.plist
+> shasum -a 256 iosapp_sec_study.app/Info.plist
 e08ed90eed72bd01d3a8031f69edadee12c8ef8d86c8cd464e6b9dbdca83efd6  iosapp_sec_study.app/Info.plist
 ```
 
-    CDHash是对CODE_DIRECTORY的哈希值，系统使用该值来唯一标识当前App代码，后面会在多处使用到该值。
+CDHash是使用相同哈希算法对整个CodeDirectory进行哈希运算结果的前20个字节，系统使用该值来唯一标识当前程序。
+    
+Mach-O文件中允许存在多个使用不同哈希算法的CodeDirectory，这是为了兼容旧系统(SHA-1)，因此会存在多个CodeDirectory，多个CDHash的情况。
 
-2. REQUIRMENTS
-   
-   代码身份匹配规则，在iOS中作用不大，主要在Mac中有用。
-3. ENTITLEMENTS和DER_ENTITLEMENTS
 
-    Entitlements声明App被授权使用哪些受保护的系统能力。没有对应的Entitlement，即使代码调用了相关 API，系统也会拒绝。
+### 0x2_2 ENTITLEMENTS和DER_ENTITLEMENTS
 
-    ```xml
-    > codesign --display --entitlements - --xml iosapp_sec_study.app | plutil -convert xml1 -o - -
-    <?xml version="1.0" encoding="UTF-8"?>
-    <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-    <plist version="1.0">
-    <dict>
-            <key>application-identifier</key>
-            <string>XXXXXXXX.ios.iosapp-sec-study</string>
-            <key>com.apple.developer.team-identifier</key>
-            <string>XXXXXXXX</string>
-            <key>com.apple.security.application-groups</key>
-            <array>
-                    <string>group.ios.iosapp-sec-study</string>
-            </array>
-            <key>get-task-allow</key>
-            <true/>
-    </dict>
-    </plist>
-    ```
+Entitlements声明App被授权使用哪些受保护的系统能力。没有对应的Entitlement，即使代码调用了相关 API，系统也会拒绝。
 
-    * application-identifier: 声明App身份(Team ID + Bundle ID)。
+```xml
+> codesign --display --entitlements - --xml iosapp_sec_study.app | plutil -convert xml1 -o - -
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+        <key>application-identifier</key>
+        <string>XXXXXXXX.ios.iosapp-sec-study</string>
+        <key>com.apple.developer.team-identifier</key>
+        <string>XXXXXXXX</string>
+        <key>com.apple.security.application-groups</key>
+        <array>
+                <string>group.ios.iosapp-sec-study</string>
+        </array>
+        <key>get-task-allow</key>
+        <true/>
+</dict>
+</plist>
+```
 
-    * com.apple.developer.team-identifier: 声明所属团队。
+  * application-identifier: 声明App身份(Team ID + Bundle ID)。
 
-    * get-task-allow: 允许其他进程获取本进程的task port，即允许被调试器attach。
+  * com.apple.developer.team-identifier: 声明所属团队。
+
+  * get-task-allow: 允许其他进程获取本进程的task port，即允许被调试器attach。
+
+  * com.apple.security.application-groups: 允许访问group.ios.iosapp-sec-study共享容器，用于 App 与扩展共享数据。
+
+ENTITLEMENTS是XML plist格式，DER_ENTITLEMENTS是DER(ASN.1)二进制编码，两者内容等价，只是格式不一样。
+
+### 0x2_3 SIGNATURE_SLOT
   
-    * com.apple.security.application-groups: 允许访问group.ios.iosapp-sec-study共享容器，用于 App 与扩展共享数据。
+真正的数字签名数据，格式为Cryptographic Message Syntax(CMS)。是对CodeDirectory的签名，如果没有这个签名，攻击者可以修改代码后，再修改对于代码页的CodeDirectory，完全绕过程序完整性验证。
 
-    ENTITLEMENTS是XML plist，DER_ENTITLEMENTS是DER(ASN.1)二进制编码，两者内容等价，只是格式不一样。
-
-4. SIGNATURE_SLOT
-  
-    签名数据，格式为Cryptographic Message Syntax(CMS)。
-    ```
+```
 > codesign --display --dump-cms=cms.asn1 ./iosapp_sec_study.app
 > openssl asn1parse -in cms.asn1 -inform der -i
     0:d=0  hl=2 l=inf  cons: SEQUENCE
     2:d=1  hl=2 l=   9 prim:  OBJECT            :pkcs7-signedData
    13:d=1  hl=2 l=inf  cons:  cont [ 0 ]
-   15:d=2  hl=2 l=inf  cons:   SEQUENCE
-   17:d=3  hl=2 l=   1 prim:    INTEGER           :01
-   20:d=3  hl=2 l=  15 cons:    SET
-   22:d=4  hl=2 l=  13 cons:     SEQUENCE
-   24:d=5  hl=2 l=   9 prim:      OBJECT            :sha256
-   35:d=5  hl=2 l=   0 prim:      NULL
-   37:d=3  hl=2 l=inf  cons:    SEQUENCE
-   39:d=4  hl=2 l=   9 prim:     OBJECT            :pkcs7-data
-   50:d=4  hl=2 l=   0 prim:     EOC
    ...
 ```
 
-    其中包括签名算法、签名的证书(证书链)以及签名值，签名的对象就是上面的CDHash，系统运行App时，会进行签名验证，确保程序以及资源文件没有被窜改。
+结构为：
+```
+ContentInfo
+├─ contentType: pkcs7-signedData
+└─ SignedData
+    ├─ version: 1
+    ├─ digestAlgorithms: SHA-256
+    ├─ encapContentInfo: 分离签名，Apple代码签名约定实际签名内容为第一个CodeDirectory的摘要
+    ├─ certificates: 签名证书，包括完整的证书链
+    └─ signerInfos: 签名信息
+      └─ SignerInfo
+         ├─ version: 1
+         ├─ sid: IssuerAndSerialNumber
+         │  ├─ issuer: 签发者
+         │  └─ serialNumber: 证书序列号，说明是certificates中的哪一个证书签名的
+         ├─ signedAttrs
+         │  ├─ contentType: pkcs7-data
+         │  ├─ signingTime
+         │  ├─ messageDigest: 第一个CodeDirectory的哈希摘要
+         │  ├─ 1.2.840.113635.100.9.2: （Apple私有属性）保存(哈希算法 OID， 完整哈希) 对，每个CodeDirectory对应一项
+         │  └─ 1.2.840.113635.100.9.1: （Apple私有属性）使用XML plist格式列出所有CodeDirectory的CDHash
+         ├─ signatureAlgorithm: sha256WithRSAEncryption
+         └─ signature: 签名值
+```
+
+签名数据的验证步骤大致为：
+1. 确认签名证书
+
+    根据SignerInfo里的issuer + 序列号，在certificates里找到叶子证书，取出公钥，并验证证书链。
+
+2. 验证messageDigest
+
+    对被签名的数据(CodeDirectory)使用digestAlgorithms计算哈希值，和signedAttrs里的messageDigest比对。
+
+    注意：messageDigest的值是第一个CodeDirectory的哈希摘要，如果有多个CodeDirectory的情况时，每个CodeDirectory的哈希摘要会被放在signedAttrs中的Apple私有属性中，会在下一步验证中保护。
+
+3. 用公钥验证签名值
+
+    对signedAttrs使用digestAlgorithms计算哈希值，和用签名证书中公钥对signature解密结果进行比对。
+
+如果存在多个SignerInfo，会对每一个SignerInfo重复上面的验证过程。Trollstore就是利用系统在处理具有多个签名者的代码签名时存在验证缺陷，实现代码签名验证的绕过。
 
 ## 0x3 Provisioning Profiles
 代码签名解决的是程序的完整性、签名身份(开发者)以及相关安全声明，而描述文件(Provisioning Profile)是由Apple签名的授权文件，用来告诉iOS：这个App是谁开发的、允许在哪些设备上运行、可以使用哪些权限。
@@ -210,14 +229,14 @@ AMFI运行在内核模块com.apple.driver.AppleMobileFileIntegrity中，在进�
   MACF 触发 AMFI policy hook
         │
         ▼
-  取出 Code Signature,计算 CDHash
+  取出 Code Signature，计算 CDHash
         │
         ▼
   CDHash 是否在 Trust Cache?
   ├─ 是 → 跳到 entitlements 检查
   └─ 否 ↓
         │
-  CoreTrust(或早期 amfid)验证证书链
+  证书和签名验证
         │
   provisioning profile 校验(有效期/UDID/revoke)
         │
@@ -229,24 +248,24 @@ AMFI运行在内核模块com.apple.driver.AppleMobileFileIntegrity中，在进�
         │
         ▼
   全部通过 → 允许执行
-  任一失败 → 拒绝,记录 AMFI 日志
+  任一失败 → 拒绝，记录 AMFI 日志
 ```
 
 1. 提取Code Signature
    
-   内核解析Mach-O文件，找到 `LC_CODE_SIGNATURE` load command，取出其中的Code Directory、代码签名、Entitlements等。
+   内核解析Mach-O文件，找到 `LC_CODE_SIGNATURE` load command，取出其中的CodeDirectory、代码签名、Entitlements等。
 
 2. 计算并比对CDHash
    
-   用Code Directory算出该二进制的唯一标识CDHash。
+   用CodeDirectory算出该二进制的唯一标识CDHash。
 
 3. 查询Trust Cache
    
    内核维护的Trust Cache记录了一批预先信任的CDHash(主要是系统自带二进制)。
-   - **命中**: 直接判定为可信,跳过后续证书链校验，流程走到第6步(entitlements检查)。
+   - **命中**: 直接判定为可信，跳过后续证书链校验，流程走到第6步(entitlements检查)。
    - **未命中**: 进入第4步。
 
-4. 证书链验证(交给CoreTrust)
+4. 证书和签名验证
    
    对于未在Trust Cache中的二进制(第三方App、开发者签名、企业签名、Ad Hoc等)，AMFI需要验证代码签名和证书链是否可信，具体是调用另一个内核模块CoreTrust完成代码签名和证书链解析。
 
@@ -258,14 +277,14 @@ AMFI运行在内核模块com.apple.driver.AppleMobileFileIntegrity中，在进�
 6. Entitlements 校验
    
    解析二进制签名中声明的entitlements(如访问钥匙串、调试权限、后台权限、私有框架访问权限等)。比对这些entitlements是否被允许:
-     - 系统二进制的entitlements由于在Trust Cache中已被信任,通常直接放行;
-     - 第三方应用的entitlements必须与其Provisioning Profile中声明的权限集合一致,不能"自己声明了但 profile没授权"的权限。
+     - 系统二进制的entitlements由于在Trust Cache中已被信任，通常直接放行;
+     - 第三方应用的entitlements必须与其Provisioning Profile中声明的权限集合一致，不能"自己声明了但 profile没授权"的权限。
    
    一些高敏感entitlement(如 `get-task-allow`、某些私有 entitlement)即使profile允许，也可能受"开发者模式"状态等额外策略约束。
 
 7. 开发者模式检查(iOS 16+)
    
-   对于非App Store签名、非系统签名的二进制(即开发者签名/Ad Hoc 等),AMFI 会检查设备是否已开启 Developer Mode。未开启时直接拒绝运行,并提示用户去设置里启用。
+   对于非App Store签名、非系统签名的二进制(即开发者签名/Ad Hoc 等)，AMFI 会检查设备是否已开启 Developer Mode。未开启时直接拒绝运行，并提示用户去设置里启用。
 
 8. 决策与返回
    
