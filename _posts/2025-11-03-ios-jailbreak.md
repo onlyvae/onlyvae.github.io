@@ -1,7 +1,7 @@
 ---
-title: "iOS Jailbreak"
+title: "iOS 越狱"
 ---
-iOS Jailbreak、Dopamine、palera1n
+Dopamine、palera1n
 
 <!--more-->
 

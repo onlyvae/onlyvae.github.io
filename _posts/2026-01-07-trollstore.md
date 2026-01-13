@@ -60,19 +60,19 @@ CoreTrust还会将签名信息1中记录的CodeDirectory的哈希值返回作为
 ## 0x4 如何安装TrollStore
 TrollStore利用的是CoreTrust签名验证漏洞，但首次安装TrollStore本身通常还需要额外的漏洞利用链。
 
-| 安装方式 | 适用 iOS 版本 | 是否需要电脑 | 利用的漏洞或机制 | 安装特点 |
-|---|---|---|---|---|
-| TrollHelperOTA | iOS 14、15 部分版本及 iOS 16.0  | 否 | OTA 安装机制及相关漏洞 | Safari 直接安装辅助 App |
-| TrollInstallerX | iOS 14.0–16.6.1，部分 iOS 17.0 Beta | 要 | kfd、dmaFail PPL Bypass 等 | 支持直接安装与间接安装 |
-| TrollInstallerMDC | iOS 15.5–15.7.1 部分设备 | 要 | MacDirtyCow（CVE-2022-46689） | 通过文件修改部署 Helper |
-| TrollRestore | iOS 15.2–17.0 的部分版本 | 是 | 备份恢复机制 | 通过修改备份注入 Helper |
+| 安装方式 | 适用 iOS 版本 | 是否需要电脑 | 利用的漏洞或机制 | 
+|---|---|---|---|
+| TrollHelperOTA | iOS 14、15 部分版本及 iOS 16.0  | 否 | OTA 安装机制及相关漏洞 |
+| TrollInstallerX | iOS 14.0–16.6.1，部分 iOS 17.0 Beta | 要 | kfd、dmaFail PPL Bypass 等 |
+| TrollInstallerMDC | iOS 15.5–15.7.1 部分设备 | 要 | MacDirtyCow（CVE-2022-46689） |
+| TrollRestore | iOS 15.2–17.0 的部分版本 | 是 | 备份恢复机制 |
 
 ## 0x5 TrollFools代码注入
-TrollStore可以绕过代码签名验证，意味着可以对目标应用进行二次修改，改变程序运行逻辑。
+TrollStore可以绕过代码签名验证，意味着可以对目标应用进行修改，改变程序运行逻辑，然后重新签名运行。
 
 [TrollFools](https://github.com/Lessica/TrollFools)是基于TrollStore的代码注入工具，其工作原理为直接修改目标程序的Mach-O文件，将动态库(dylib)插入进去，然后使用和TrollStore相同方式给目标应用进行重新签名。
 
-下面用一个例子来说明。使用fishhook实现对sysctlbyname函数的hook，修改机型参数sysctlbyname("hw.machine")为"iPhone99,99"，将以下代码编译的到ModelHook.dylib。
+下面用一个例子来说明。使用fishhook实现对sysctlbyname函数的hook，修改机型参数sysctlbyname("hw.machine")为"iPhone99,99"，将以下代码编译得到`ModelHook.dylib`。
 ```c
 #include <errno.h>
 #include <stddef.h>
@@ -126,11 +126,11 @@ static void install_model_hook(void) {
 #endif
 ```
 
-在TrollFools中选择给设备信息查看工具DevInfo注入ModelHook.dylib，随后打开App生效，设备机型被修改成"iPhone99,99"。
+在TrollFools中选择给查看设备信息应用DevInfo注入`ModelHook.dylib`，随后打开App生效，设备机型被修改成"iPhone99,99"：
 
 ![trollfools]({{ '/assets/images/trollfools.png' | relative_url }})
 
-查看注入后的程序，发现添加了`LC_LOAD_WEAK_DYLIB` load command，加载ModelHook.dylib。
+查看注入后的程序，发现添加了`LC_LOAD_WEAK_DYLIB` load command，加载`ModelHook.dylib`。
 ```shell
 > otool -l DeviceInfo.app/Frameworks/GDTMobSDK.framework/GDTMobSDK|grep -B 3 -A 3 ModelHook
 Load command 52

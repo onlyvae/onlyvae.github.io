@@ -1,7 +1,7 @@
 ---
-title: "iOS Sandbox"
+title: "iOS 沙盒机制"
 ---
-Sandbox Profile、Sandbox Extension、libSandy、Sandbox Escape
+Sandbox Profile、Sandbox Extension、libSandy
 
 <!--more-->
 
