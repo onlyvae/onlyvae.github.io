@@ -143,8 +143,8 @@ DeviceCheck只能实现对设备进行标记，适合以下场景：
 使用DeviceCheck拉黑攻击者设备并不能完全阻止攻击，攻击者可以通过Hook进程devicecheckd替换当前设备的激活证书为未被风控设备的证书来绕过服务端风控，但DeviceCheck还是能提高攻击者的攻击成本。
 
 ## 0x3 References
-https://developer.apple.com/documentation/foundation/filemanager/ubiquityidentitytoken
+[https://developer.apple.com/documentation/foundation/filemanager/ubiquityidentitytoken](https://developer.apple.com/documentation/foundation/filemanager/ubiquityidentitytoken)
 
-https://developer.apple.com/documentation/devicecheck
+[https://developer.apple.com/documentation/devicecheck](https://developer.apple.com/documentation/devicecheck)
 
-https://www.52pojie.cn/forum.php?mod=viewthread&tid=2114213&extra=page%3D1%26filter%3Dtypeid%26typeid%3D195
+[https://www.52pojie.cn/forum.php?mod=viewthread&tid=2114213&extra=page%3D1%26filter%3Dtypeid%26typeid%3D195](https://www.52pojie.cn/forum.php?mod=viewthread&tid=2114213&extra=page%3D1%26filter%3Dtypeid%26typeid%3D195)

@@ -7,7 +7,7 @@ Sandbox Profile、Sandbox Extension、libSandy
 
 ## 0x1 iOS Sandbox是什么
 
-iOS Sandbox 是一种由内核(com.apple.security.sandbox模块)强制执行的访问控制机制，用于限制 App 对文件系统、进程、系统调用及其他资源的访问。
+iOS Sandbox是由内核(com.apple.security.sandbox模块)强制执行的访问控制机制，用于限制App对文件系统、进程、系统调用及其他资源的访问。
 
 沙盒限制不仅对第三方App生效，对系统App也生效，防止系统App出现漏洞后，被该App的权限访问整个系统。
 
@@ -45,9 +45,9 @@ iOS Sandbox 是一种由内核(com.apple.security.sandbox模块)强制执行的�
 
 以文件读取为例，大致流程为：
 
-1. App 通过 open() 发起文件访问。
-2. 系统调用进入 XNU 内核。
-3. 文件访问路径上的安全检查触发 MAC(Mandatory Access Control) Framework 的相关 Hook。
+1. App通过open()发起文件访问。
+2. 系统调用进入XNU内核。
+3. 文件访问路径上的安全检查触发MAC(Mandatory Access Control) Framework的相关 Hook。
 4. Sandbox 策略根据操作类型、目标路径和进程的安全上下文判断是否允许。
 
 ## 0x2 Sandbox Profile
@@ -100,7 +100,7 @@ Sandbox Profile中的策略通常白名单策略，默认动作拒绝，只允�
 
 ## 0x3 Sandbox Extension
 
-Sandbox Extension是一种动态授权机制，允许进程在不修改原有 Sandbox Profile 的情况下，获得对特定资源的额外访问权限。
+Sandbox Extension是一种动态授权机制，允许进程在不修改原有Sandbox Profile的情况下，获得对特定资源的额外访问权限。
 
 ```
 Process A                       Process B
@@ -147,3 +147,11 @@ libSandy由两部分组成：
 ## 0x5 Sandbox Escape
 
 攻击者利用系统漏洞，突破当前进程受到的Sandbox限制，获得原本不被允许的资源访问能力。例如读取其他应用数据目录、修改系统配置等。
+
+## 0x6 References
+
+[https://developer.apple.com/documentation/security/app-sandbox](https://developer.apple.com/documentation/security/app-sandbox)
+
+[https://github.com/cellebrite-labs/sandblaster](https://github.com/cellebrite-labs/sandblaster)
+
+[https://github.com/opa334/libSandy](https://github.com/opa334/libSandy)

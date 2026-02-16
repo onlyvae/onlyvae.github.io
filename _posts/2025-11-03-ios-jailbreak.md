@@ -1,7 +1,7 @@
 ---
 title: "iOS 越狱"
 ---
-Dopamine、palera1n
+palera1n、Dopamine、Dopamine-roothide
 
 <!--more-->
 
@@ -61,3 +61,13 @@ iPhone能否越狱与CPU型号和系统版本有关，目前针对iOS 15及以�
 4. [Dopamine-roothide](https://github.com/roothide/Dopamine-roothide)在Dopamine的基础上，添加越狱环境隐藏功能，可选择应用单独隐藏越狱，但是开启隐藏越狱后无法注入插件。
 
 5. 不论哪种越狱方式，都会安装越狱环境[Procursus](https://github.com/ProcursusTeam/Procursus)和包管理器(Sileo或Zebra)，Procursus负责提供基础的命令行工具、包管理器的底层(dpkg和apt)以及一些依赖库。包管理器可以添加软件仓库，安装别人开发好的软件。
+
+## 0x3 References
+
+[https://ellekit.space/dopamine/](https://ellekit.space/dopamine/)
+
+[https://palera.in/](https://palera.in/)
+
+[https://github.com/roothide/Dopamine-roothide](https://github.com/roothide/Dopamine-roothide)
+
+[https://github.com/ProcursusTeam/Procursus](https://github.com/ProcursusTeam/Procursus)

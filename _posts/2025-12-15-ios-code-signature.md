@@ -318,7 +318,9 @@ Jailbreak Trustcache 0 <UUID: 8AE914AFBFE640A8BFCA01197C662424> (length: 53)
 ...
 ```
 
-## 0x6 Reference
-https://developer.apple.com/documentation/technotes/tn3161-inside-code-signing-certificates
-https://developer.apple.com/documentation/technotes/tn3126-inside-code-signing-hashes
-https://developer.apple.com/documentation/technotes/tn3125-inside-code-signing-provisioning-profiles
+## 0x6 References
+[https://developer.apple.com/documentation/technotes/tn3161-inside-code-signing-certificates](https://developer.apple.com/documentation/technotes/tn3161-inside-code-signing-certificates)
+
+[https://developer.apple.com/documentation/technotes/tn3126-inside-code-signing-hashes](https://developer.apple.com/documentation/technotes/tn3126-inside-code-signing-hashes)
+
+[https://developer.apple.com/documentation/technotes/tn3125-inside-code-signing-provisioning-profiles](https://developer.apple.com/documentation/technotes/tn3125-inside-code-signing-provisioning-profiles)
