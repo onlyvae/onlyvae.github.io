@@ -206,7 +206,29 @@ Dopamine利用系统漏洞来实现内核特权，然后Hook用户空间进程�
 
    * dyld修补指令检测
 
-      从内存中的 dyld Mach-O 镜像定位 `dyld4::ProcessConfig::Security::getAMFI`，读取函数入口的 8 字节，并与 `e0 1f 80 d2 c0 03 5f d6` 比对。匹配时可作为 Dopamine 修补 dyld 的特征。
+      dyldhook会将dyld的 `dyld4::ProcessConfig::Security::getAMFI` 函数修补为返回值 0xff，使得dyld能够从环境变量中加载systemhook.dylib。
+
+        >[basebin_gen.m#L45-L62](https://github.com/opa334/Dopamine/blob/5b1d2c1c3bf54dd8e3641d29c60cd3a0c13cde88/BaseBin/libjailbreak/src/basebin_gen.m#L45-L62)
+        >```c
+        >	// Make AMFI flags always be `0xff`, allows DYLD_* variables to always work
+        >	__block uint64_t getAMFIAddr = 0;
+        >	macho_enumerate_symbols(dyldMacho, ^(const char *name, uint8_t type, uint64_t vmaddr, bool *stop){
+        >		if (!strcmp(name, "__ZN5dyld413ProcessConfig8Security7getAMFIERKNS0_7ProcessERNS_15SyscallDelegateE")) {
+        >			getAMFIAddr = vmaddr;
+        >		}
+        >	});
+        >	uint32_t getAMFIPatch[] = {
+        >		0xd2801fe0, // mov x0, 0xff
+        >		0xd65f03c0  // ret
+        >	};
+        >	if (getAMFIAddr == 0) {
+        >       printf("Error: Failed patchfinding getAMFI\n");
+        >        return -1;
+        >    }
+        >	macho_write_at_vmaddr(dyldMacho, getAMFIAddr, sizeof(getAMFIPatch), getAMFIPatch);
+        >```
+
+      从内存中的dyld Mach-O镜像定位 `dyld4::ProcessConfig::Security::getAMFI`，读取函数入口的 8 字节，并与 `e0 1f 80 d2 c0 03 5f d6` 比对。
 
    * dyld完整性检测
 
@@ -481,7 +503,7 @@ checkm8漏洞利用DFU模式下的Use-After-Free（UAF），在安全机制加�
 
     * dyld修补指令检测
 
-        fakedyld会修改dyld中的 `amfi_check_dyld_policy_self` 函数入口指令为固定16字节序列 D2 80 1B E8 F9 00 00 28 D2 80 00 00 D6 5F 03 C0：
+        fakedyld会修改dyld中的 `amfi_check_dyld_policy_self` 函数入口指令为固定16字节序列，也是为了能够让dyld从环境变量中加载systemhook.dylib:
 
         >[patcher.c#L191-L211](https://github.com/palera1n/jbinit/blob/df653b8a4cc30cdc3bcec65d4aff0ed7b598da22/src/fakedyld/patch_dyld/patcher.c#L191-L211)
 
