@@ -13,19 +13,19 @@ iOS越狱（Jailbreak）是利用系统漏洞或其他特权能力，突破Apple
 
     iOS系统使用Sandbox Policy限制进程的文件访问，App只能访问自身应用安装目录和容器目录，以及部分系统目录，无法读取其他App目录，无法获取应用列表等信息。越狱后可绕过沙盒限制，读取任意文件目录：
 
-    ![查看文件]({{ '/assets/images/filza.png' | relative_url }}){: .jailbreak-screenshot}
+    ![查看文件]({{ '/assets/images/filza.webp' | relative_url }}){: .jailbreak-screenshot}
 
 2. 突破代码签名验证
 
     iOS系统有代码签名验证，只允许运行苹果签名的程序，比如系统应用、App Store下载的App或者通过免费Apple ID签名的应用(只有7天有效期)。越狱后可突破该限制，安装ssh、frida等程序。
 
-    ![ssh]({{ '/assets/images/ssh.jpg' | relative_url }})
+    ![ssh]({{ '/assets/images/ssh.webp' | relative_url }})
 
 3. Hook应用程序
 
     使用frida或Tweak插件来修改App内部运行逻辑。例如使用frida修改App读取到的设备机型：
 
-    ![修改设备机型]({{ '/assets/images/spoof_hw_machine.jpg' | relative_url }}){: .jailbreak-screenshot}
+    ![修改设备机型]({{ '/assets/images/spoof_hw_machine.webp' | relative_url }}){: .jailbreak-screenshot}
     
 
 设备能否越狱与CPU型号和系统版本有关，更新的CPU型号和系统版本更难越狱，而且iOS系统降级受苹果签名严格限制，在新版本发布之后，旧版本的签名通道通常只保留几天到几周，关闭后就无法通过官方方式降级，所以不能将系统降级到可越狱的版本。目前针对iOS 15及以上的越狱工具是Dopamine和palera1n。下面分别介绍其工作原理和检测方案。
@@ -52,7 +52,7 @@ iOS越狱（Jailbreak）是利用系统漏洞或其他特权能力，突破Apple
 Dopamine越狱需要先在手机上安装Dopamine应用，低版本iOS可以先安装巨魔(TrollStore)，再使用巨魔安装Dopamine，其他版本需要通过其他应用侧载方式，例如使用免费Apple ID自签(7天到期)，或者使用付费的Apple开发者账号。手机重启后需要重新在应用中点击越狱。
 
 
-![dopamine]({{ '/assets/images/dopamine.PNG' | relative_url }}){: .jailbreak-screenshot}
+![dopamine]({{ '/assets/images/dopamine.webp' | relative_url }}){: .jailbreak-screenshot}
 
 
 ### 0x2_1 实现原理
@@ -254,7 +254,7 @@ Dopamine利用系统漏洞来实现内核特权，然后Hook用户空间进程�
 
       CrashReporter位于dyld的Mach-O镜像中的__DATA,__crash_info，可以从内存中解析读取。
       
-      ![crash_report]({{ '/assets/images/crash_report.jpeg' | relative_url }}){: .jailbreak-screenshot}
+      ![crash_report]({{ '/assets/images/crash_report.webp' | relative_url }}){: .jailbreak-screenshot}
 
 
     * 动态链接库枚举
@@ -270,7 +270,7 @@ Dopamine利用系统漏洞来实现内核特权，然后Hook用户空间进程�
 
       3. `mach_vm_region` 扫描进程内存，寻找Mach-O Header，再从Mach-O中解析出加载的dylib。
 
-      ![image_list]({{ '/assets/images/image_list.png' | relative_url }}){: .jailbreak-screenshot}
+      ![image_list]({{ '/assets/images/image_list.webp' | relative_url }}){: .jailbreak-screenshot}
 
     * 系统函数Hook检测
 
@@ -296,7 +296,7 @@ Dopamine利用系统漏洞来实现内核特权，然后Hook用户空间进程�
 
       可根据该特征对部分系统函数进行Hook检测。
     
-      ![litehook]({{ '/assets/images/litehook.png' | relative_url }}){: .jailbreak-screenshot}
+      ![litehook]({{ '/assets/images/litehook.webp' | relative_url }}){: .jailbreak-screenshot}
     
     * 符号探测
 
@@ -335,7 +335,7 @@ Dopamine利用系统漏洞来实现内核特权，然后Hook用户空间进程�
 
         或者设备上安装了ssh server，可以探测22、2222端口；安装了frida server，可以探测27042端口。
 
-      ![jailbreak]({{ '/assets/images/jailbreak.jpeg' | relative_url }}){: .jailbreak-screenshot}
+      ![jailbreak]({{ '/assets/images/jailbreak.webp' | relative_url }}){: .jailbreak-screenshot}
 
 
 ## 0x3 palera1n
@@ -543,7 +543,7 @@ checkm8漏洞利用DFU模式下的Use-After-Free（UAF），在安全机制加�
 
       这种hook方式不会修改原始函数的指令，只是修改了当前进程中的符号地址，检测时可以通过dlsym获取符号地址，然后用dladdr查询出地址位是否位于systemhook.dylib。
 
-      ![palera1n_hook]({{ '/assets/images/palera1n_hook.jpeg' | relative_url }}){: .jailbreak-screenshot}
+      ![palera1n_hook]({{ '/assets/images/palera1n_hook.webp' | relative_url }}){: .jailbreak-screenshot}
 
 
 3. 越狱环境检测
@@ -556,7 +556,7 @@ checkm8漏洞利用DFU模式下的Use-After-Free（UAF），在安全机制加�
 
         和Dopamine检测类似，额外一点是，palera1n会自动安装dropbear(ssh server)监听在44端口。
 
-        ![palera1n]({{ '/assets/images/palera1n.jpeg' | relative_url }}){: .jailbreak-screenshot}
+        ![palera1n]({{ '/assets/images/palera1n.webp' | relative_url }}){: .jailbreak-screenshot}
 
 ## 0x4 越狱检测方法汇总
 

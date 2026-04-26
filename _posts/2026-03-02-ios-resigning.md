@@ -38,18 +38,18 @@ iOS应用安装包为IPA格式，从Apple Store下载安装的应用会被FairPl
 
     impactor是PC端侧载工具，可以在macOS、Linux和Windows上运行，并且能够在安装IPA时注入动态链接库dylib。
 
-    ![impactor]({{ '/assets/images/impactor.jpg' | relative_url }}){: .resigning-screenshot}
+    ![impactor]({{ '/assets/images/impactor.webp' | relative_url }}){: .resigning-screenshot}
 
     SideStore是手机端侧载工具，需要先通过PC端的侧载工具安装到手机上，会占用一个免费账号的App数量。安装后需要登录Apple ID获取开发者证书，然后使用VPN来模拟设备和电脑连接，安装和签名IPA时不需要再连接电脑。
 
-    ![sidestore]({{ '/assets/images/sidestore.jpg' | relative_url }}){: .resigning-screenshot}
+    ![sidestore]({{ '/assets/images/sidestore.webp' | relative_url }}){: .resigning-screenshot}
 
 
 2. 企业证书签名
 
     使用企业开发者证书对IPA进行签名，不需要手机连接电脑，同样也是通过官方的代码签名系统，会得的一个可以在任意设备上安装的描述文件，手机上直接安装IPA后信任描述文件即可运行App。  
 
-    ![enterprise]({{ '/assets/images/enterprise.jpg' | relative_url }}){: .resigning-screenshot}
+    ![enterprise]({{ '/assets/images/enterprise.webp' | relative_url }}){: .resigning-screenshot}
 
 3. CoreTrust漏洞
 
@@ -57,7 +57,7 @@ iOS应用安装包为IPA格式，从Apple Store下载安装的应用会被FairPl
     
     TrollStore(巨魔)是基于该漏洞的应用签名和安装工具。TrollFools也是使用相同的原理，可以将动态库dylib直接植入到目标应用程序中，然后直接重新签名。
 
-    ![trollfools]({{ '/assets/images/trollfools.png' | relative_url }}){: .resigning-screenshot}
+    ![trollfools]({{ '/assets/images/trollfools.webp' | relative_url }}){: .resigning-screenshot}
 
 4. LiveContainer
 
@@ -67,7 +67,7 @@ iOS应用安装包为IPA格式，从Apple Store下载安装的应用会被FairPl
     
     LiveContainer也支持代码库注入。
     
-    ![livecontainer]({{ '/assets/images/livecontainer.jpg' | relative_url }}){: .resigning-screenshot}
+    ![livecontainer]({{ '/assets/images/livecontainer.webp' | relative_url }}){: .resigning-screenshot}
 
 
 ## 0x2 检测方案
@@ -91,7 +91,7 @@ iOS应用安装包为IPA格式，从Apple Store下载安装的应用会被FairPl
 
     所有的应用侧载方式都会对应用进行重新签名，包括利用CoreTrust漏洞的巨魔，巨魔安装应用检测看[之前的文章](/2026/01/07/trollstore/#0x3-trollstore%E5%AE%89%E8%A3%85%E5%BA%94%E7%94%A8%E6%A3%80%E6%B5%8B)。这里只介绍其他几种侧载方式的签名检测。
 
-    ![resigning]({{ '/assets/images/resigning.jpg' | relative_url }}){: .resigning-screenshot}
+    ![resigning]({{ '/assets/images/resigning.webp' | relative_url }}){: .resigning-screenshot}
 
    * Team ID和Bundle ID是否更改
 
@@ -115,7 +115,7 @@ iOS应用安装包为IPA格式，从Apple Store下载安装的应用会被FairPl
   
     * LiveContainer会给应用注入代码库LiveContainerShared，即使在设置中关闭Tweak注入。
 
-    ![livecontainer_signal]({{ '/assets/images/livecontainer_signal.jpg' | relative_url }}){: .resigning-screenshot}
+    ![livecontainer_signal]({{ '/assets/images/livecontainer_signal.webp' | relative_url }}){: .resigning-screenshot}
 
 
 4. 代码注入检测

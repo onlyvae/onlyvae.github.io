@@ -92,7 +92,7 @@ Sandbox Profile中的策略通常白名单策略，默认动作拒绝，只允�
 
 在第三方App中测试不同的路径：
 
-![文件路径测试]({{ '/assets/images/filepath_test.png' | relative_url }})
+![文件路径测试]({{ '/assets/images/filepath_test.webp' | relative_url }})
 
 1. `stat()` 可以用来判断文件是否存在，例如判断越狱相关文件是否存在
 2. 第三方App只能读取应用自身的安装目录和数据目录，无法读取其他应用的目录
@@ -142,7 +142,7 @@ libSandy由两部分组成：
 其工作原理是向目标进程注入libsandy.dylib库，和守护进程sandy通信获取Sandbox Extension Token，最后消费Token获得特权。
 
 使用libSandy给测试应用添加/var/mobile目录的读取权限：
-![libSandy]({{ '/assets/images/libsandy.jpg' | relative_url }})
+![libSandy]({{ '/assets/images/libsandy.webp' | relative_url }})
 
 ## 0x5 Sandbox Escape
 

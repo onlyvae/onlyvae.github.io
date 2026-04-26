@@ -61,7 +61,7 @@ Certificate:
 
 代码签名存放在Mach-O文件中，使用 `LC_CODE_SIGNATURE` load command命令加载。
 
-![代码签名]({{ '/assets/images/code_signature.jpg' | relative_url }})
+![代码签名]({{ '/assets/images/code_signature.webp' | relative_url }})
 
 ### 0x2_1 CODE_DIRECTORY
 CodeDirectory记录了被签名程序的所有关键哈希信息。系统通过验证CodeDirectory的完整性，来确认整个可执行文件、资源、Info.plist、entitlements等是否被篡改。
@@ -212,7 +212,7 @@ ContentInfo
 
 描述文件位于应用安装包内的embedded.mobileprovision，其中包含授权的开发者证书、App ID、entitlements、有效期、设备ID。
 
-![描述文件]({{ '/assets/images/mobileprovision.png' | relative_url }})
+![描述文件]({{ '/assets/images/mobileprovision.webp' | relative_url }})
 
 * Development和Ad Hoc分发方式有设备ID限制，其他分发方式不限制运行设备
 * App Store下载的安装包中没有描述文件，因为App Store会在其分发过程中检查应用是否已正确签名和配置。
