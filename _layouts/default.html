@@ -4,7 +4,10 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
+    {% assign asset_version = site.time | date: '%s' %}
+    <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: asset_version | relative_url }}">
+    <link rel="preload" as="image" href="{{ '/assets/cursors/text@8x.png' | relative_url }}" media="(any-hover: hover) and (any-pointer: fine)">
+    <script src="{{ '/assets/js/cursor.js?v=' | append: asset_version | relative_url }}" defer></script>
     {% include head-custom.html %}
     {% seo %}
   </head>

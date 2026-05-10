@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <defs>
+    <path id="beam" d="M11 6h10M16 6v20M11 26h10"/>
+  </defs>
+  <g fill="none" stroke-linecap="square">
+    <use href="#beam" transform="translate(-2 1)" stroke="#68ecff" stroke-width="1.6"/>
+    <use href="#beam" transform="translate(2 -1)" stroke="#ff81b0" stroke-width="1.6"/>
+    <use href="#beam" stroke="#08080c" stroke-width="2.6"/>
+    <use href="#beam" stroke="#f2faff" stroke-width="1.4"/>
+  </g>
+</svg>
