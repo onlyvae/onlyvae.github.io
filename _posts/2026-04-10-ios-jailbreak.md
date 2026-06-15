@@ -256,7 +256,7 @@ Dopamine利用系统漏洞来实现内核特权，然后Hook用户空间进程�
       >}
       >```
       
-      在应用内直接读取环境变量实际上是检测不到的，但是dyld会将其读到的环境变量变量写入到CrashReporter中的message2字段：
+      在应用内直接读取环境变量实际上是检测不到的，但是dyld会将其读到的环境变量写入到CrashReporter中的message2字段：
 
       > [DyldProcessConfig.cpp#L1537-L1548](https://github.com/apple-oss-distributions/dyld/blob/18d3cb0f6b46707fee6d315cccccf7af8a8dbe57/dyld/DyldProcessConfig.cpp#L1537-L1548)
       >```c

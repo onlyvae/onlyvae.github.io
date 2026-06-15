@@ -1,5 +1,5 @@
 title: "onlyvae's blog"
-description: "记录日常学习。"
+description: ""
 url: "https://onlyvae.github.io"
 baseurl: ""
 repository: onlyvae/onlyvae.github.io
@@ -7,7 +7,7 @@ repository: onlyvae/onlyvae.github.io
 github:
   repository_url: "https://github.com/onlyvae/onlyvae.github.io"
   repository_name: "onlyvae.github.io"
-  project_tagline: "记录日常学习。"
+  project_tagline: ""
 lang: zh-CN
 timezone: Asia/Singapore
 

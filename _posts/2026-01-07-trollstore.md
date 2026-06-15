@@ -75,87 +75,9 @@ TrollStore利用的是CoreTrust签名验证漏洞，但首次安装TrollStore本
 | TrollInstallerMDC | iOS 15.5–15.7.1 部分设备 | 要 | MacDirtyCow（CVE-2022-46689） |
 | TrollRestore | iOS 15.2–17.0 的部分版本 | 是 | 备份恢复机制 |
 
-## 0x5 TrollFools代码注入
-TrollStore可以绕过代码签名验证，意味着可以对目标应用进行修改，改变程序运行逻辑，然后重新签名运行。
-
-[TrollFools](https://github.com/Lessica/TrollFools)是基于TrollStore的代码注入工具，其工作原理为直接修改目标程序的Mach-O文件，将动态库(dylib)插入进去，然后使用和TrollStore相同方式给目标应用进行重新签名。
-
-下面用一个例子来说明。使用fishhook实现对sysctlbyname函数的hook，修改机型参数sysctlbyname("hw.machine")为"iPhone99,99"，将以下代码编译得到`ModelHook.dylib`。
-```c
-#include <errno.h>
-#include <stddef.h>
-#include <string.h>
-#include <sys/sysctl.h>
-
-#include "fishhook.h"
-
-static int (*original_sysctlbyname)(const char *, void *, size_t *, void *, size_t);
-static const char spoofed_model[] = "iPhone99,99";
-
-static int hooked_sysctlbyname(const char *name, void *oldp, size_t *oldlenp,
-                              void *newp, size_t newlen) {
-    // Forward unrelated queries and any attempted writes unchanged.
-    if (name == NULL || strcmp(name, "hw.machine") != 0 || newp != NULL || newlen != 0) {
-        if (original_sysctlbyname == NULL) {
-            errno = ENOSYS;
-            return -1;
-        }
-        return original_sysctlbyname(name, oldp, oldlenp, newp, newlen);
-    }
-
-    if (oldlenp == NULL) {
-        errno = EFAULT;
-        return -1;
-    }
-    if (oldp == NULL) {
-        *oldlenp = sizeof(spoofed_model); // Includes the terminating NUL.
-        return 0;
-    }
-
-    size_t capacity = *oldlenp;
-    size_t copied = capacity < sizeof(spoofed_model) ? capacity : sizeof(spoofed_model);
-    memcpy(oldp, spoofed_model, copied);
-    *oldlenp = copied;
-    if (capacity < sizeof(spoofed_model)) {
-        errno = ENOMEM;
-        return -1;
-    }
-    return 0;
-}
-
-#ifndef MODEL_HOOK_UNIT_TEST
-__attribute__((constructor))
-static void install_model_hook(void) {
-    struct rebinding binding = {
-        "sysctlbyname", (void *)hooked_sysctlbyname, (void **)&original_sysctlbyname
-    };
-    rebind_symbols(&binding, 1);
-}
-#endif
-```
-
-在TrollFools中选择给查看设备信息应用DevInfo注入`ModelHook.dylib`，随后打开App生效，设备机型被修改成"iPhone99,99"：
-
-![trollfools]({{ '/assets/images/trollfools.webp' | relative_url }})
-
-查看注入后的程序，发现添加了`LC_LOAD_WEAK_DYLIB` load command，加载`ModelHook.dylib`。
-```shell
-> otool -l DeviceInfo.app/Frameworks/GDTMobSDK.framework/GDTMobSDK|grep -B 3 -A 3 ModelHook
-Load command 52
-          cmd LC_LOAD_WEAK_DYLIB
-      cmdsize 48
-         name @rpath/ModelHook.dylib (offset 24)
-   time stamp 0 Thu Jan  1 07:30:00 1970
-      current version 0.0.0
-compatibility version 0.0.0
-```
-
-
-## 0x6 References
+## 0x5 References
 [https://github.com/opa334/TrollStore](https://github.com/opa334/TrollStore)
 
 [https://github.com/JJTech0130/TrollRestore](https://github.com/JJTech0130/TrollRestore)
-
-[https://github.com/Lessica/TrollFools](https://github.com/Lessica/TrollFools)
 
 [https://web.archive.org/web/20251115111515/https://goa2025.nullcon.net/doc/goa-2025/State-of-iOS-Jailbreaking-in-2025.pdf](https://web.archive.org/web/20251115111515/https://goa2025.nullcon.net/doc/goa-2025/State-of-iOS-Jailbreaking-in-2025.pdf)
